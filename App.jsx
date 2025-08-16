@@ -1,133 +1,85 @@
-import React from 'react';
 import { useState } from 'react';
 import './App.css';
-import myImage from './assets/me.jpg';
 
-function Lol(){
-  return(
-    <>
-    <p>This is a react comp</p>
-    </>
-  )
+function Square({ value, onSquareClick }) { 
+  return (
+    <button className="Square" onClick={onSquareClick}>
+      {value}
+    </button>
+  );
 }
 
-  let integer = 5;
-// This will increment the integer by 1
+function App() {
+  const [xIsNext, setXIsNext] = useState(true);
+  const [squares, setSquares] = useState(Array(9).fill(null));
 
-function MyButton() {
-  const[count, setCount] = React.useState(integer);
+  function handleClick(i) {
+    if (squares[i]!=null) {
+      return;
+    }
+    const nextSquares = squares.slice();
+    if(xIsNext){
+      nextSquares[i]="X";
+    }
+    else{
+      nextSquares[i]="O"
+    }
+    setSquares(nextSquares);
+    setXIsNext(!xIsNext);
+  }
 
-    function checkOddEven(num){
-    if(num % 2 === 0){
-      return 'Even';
-    } else {
-      return 'Odd';
+  function calculateWinner(squares) {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
     }
   }
+  return null;
+}
+
+  const winner = calculateWinner(squares);
+  let status;
+  if (winner) {
+    status = 'Winner: ' + winner;
+  } else {
+    status = 'Next player: ' + (xIsNext ? 'X' : 'O');
+  }
+
   
 
   return (
-    <>
-    <p>{count}</p>
-     <p>{checkOddEven(count)}</p>  
-    <button onClick={() => {setCount(count + 1);turn();}}>
-         
-      Click me</button>
-    </>
-    
-  );
-}
-console.log({integer});
 
-  integer= integer + 1; 
-
-function App() {
-  <Lol />
-
-
-
-  return (
-    <>
-    <Lol />
-    <p>{integer}</p>
-    <p>My name's Tanush</p>
-
-    </>
-  )
-}
-
-
-
-const user = {
-  name: 'Hedy Lamarr',
-  imageUrl: myImage,
-  imageSize: 90,
-};
-function LogForm(){
-  return(
-    <form>
-      <label>
-        Name:
-        <input type="text" name="name" />
-      </label>
-      <br />
-      <label>
-        Password:
-        <input type="password" name="password" />
-      </label>
-      <br />
-      <button type="submit">Submit</button>
-    </form>
-  );
-}
-
-
-
-function Loggedin(){
-  return(
-    <p>Logged in</p>
-  )
-}
-  const products = [
-    { id: 1, name: '1', price: 1000 },
-    { id: 2, name: '2', price: 500 },
-    { id: 4, name: '4', price: 500 },
-    { id: 3, name: '3', price: 300 },
-  ];
-
-function List(){
-  const ListItems=products.map(product =>
-    <li key={product.id}>
-      {product.name}
-      </li>
-  )
-  return (
-    <ul>
-      {ListItems}
-    </ul>
-  );
-
-}
-
-export default function MyApp(){
-
-    const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-
-function turn(){
-  setIsLoggedIn(true);
-}
-
-  let content = isLoggedIn ? <Loggedin /> : <LogForm />;
-
-    return (
-    <div>
-      <MyButton />
-      <App />
-            <h1>{user.name}</h1>
-      <img className="avatar" src={user.imageUrl} alt={'Photo of ' + user.name}/>
-      {content}
-      <List />
-
+    <div className="container">
+       <div className="status">{status}</div>   {/* 👈 winner/next player shows here */}
+      <div className="row no1">
+        <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
+        <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
+        <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
+      </div>
+      <div className="row no2">
+        <Square value={squares[3]} onSquareClick={() => handleClick(3)} />
+        <Square value={squares[4]} onSquareClick={() => handleClick(4)} />
+        <Square value={squares[5]} onSquareClick={() => handleClick(5)} />
+      </div>
+      <div className="row no3">
+        <Square value={squares[6]} onSquareClick={() => handleClick(6)} />
+        <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
+        <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
+      </div>
+      <div>Number of moves: {squares.filter(Boolean).length}</div>
     </div>
   );
 }
+
+export default App;
